@@ -29,32 +29,12 @@ void EventControl() {
 
 	INPUT rightclick = leftclick;
 	rightclick.mi.dwFlags = (MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP);
-
-	INPUT f10;
-	WORD vkey = VK_F10;
-	f10.type = INPUT_KEYBOARD;
-	f10.ki.wScan = MapVirtualKey(vkey, MAPVK_VK_TO_VSC);
-	f10.ki.time = 0;
-	f10.ki.dwExtraInfo = 0;
-	f10.ki.wVk = vkey;
-	f10.ki.dwFlags = 0; 
-
-	INPUT keyup = f10;
-	keyup.ki.dwFlags = (KEYEVENTF_KEYUP);
-
-	bool select = true;
 	
 
 	while (true) {
-		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0) {
-			select = true;
-		}
+
 		int tdiff = (GetKeyState(VK_LSHIFT) & 0x8000) ? diff + boost : diff; // if shift is pressed, add boost to diff
-		if (GetKeyState(VK_CAPITAL) == 1) { // state of caps lock == 1 if it is toggled
-			if (select) { // deselect everything
-				SendInput(1, &f10, sizeof(INPUT));
-				select = false;
-			}
+		if (GetKeyState(VK_MENU) & 0x8000) { // toggle control when alt is pressed
 			
 			if ((GetKeyState(0x41) & 0x8000 || GetKeyState(0x4A) & 0x8000) &&
 				(GetKeyState(0x57) & 0x8000 || GetKeyState(0x49) & 0x8000)) { // left-up
@@ -104,14 +84,7 @@ void EventControl() {
 			}
 			
 		}
-		else {
-			select = true;
-		}
-		if (GetKeyState(VK_F10) & 0x8000) {
-			SendInput(1, &keyup, sizeof(INPUT));
-		}
-
-
+		
 	}
 }
 
